@@ -30,29 +30,23 @@ markerSize = 25;        % set size of data points
 %% load data files
 
 % specify the current working directory
-if ~exist('cwd','var') %Checks if a variable named "cwd" does not exist
-    cwd = uigetdir('.','Select a folder to process data'); %Prompts user to select a directory; this directory is saved as the string "cwd"
+if ~exist('cwd','var')
+    cwd = uigetdir('.','Select a folder to process data');
 end
 
 % locate mat data files
-files = findfiles(cwd,'sample\.mat$');  %There are several functions on the exchange called findfiles,
-% but none of the ones I checked take arguments like this so we may need to
-% change this line.  It should check the directory specified by cwd and
-% find all files with the given extension. "files" is an array containing
-% a string for the title of each file found in each entry.
+files = findfiles(cwd,'sample\.mat$');  
 %files = findfiles(cwd,'\.wav$');
 
 % iterate over each file found
 for fNum = 1:numel(files)
     [pname,fname,~] = fileparts(files{fNum});
     fprintf('Found file "%s" in directory:\n\t%s\n\n',fname,pname);
-    % Prints the path and name of the nth file found in the directory cwd with
-    % the desired extension, which for us is .wav
+   
     fprintf('Loading data...')
     data = load(fname); %%%%%%%%% read in blocks at a time for WAV files
-    % fills an array with the data from the current wav file
     fprintf(' Done!\n\n')
-    % Prints "Done" and skips two lines
+   
     data_names = fieldnames(data);
     fprintf('Found %d variables in file.  Assuming all are time series\n\n',numel(data_names))
     

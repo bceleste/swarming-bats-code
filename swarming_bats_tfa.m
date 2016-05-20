@@ -37,7 +37,7 @@ end
 
 % locate mat data files
 
-files = findfiles(cwd,'sample\.mat$');  %There are several functions on the exchange called findfiles,
+files = findfiles('wav',cwd);  %There are several functions on the exchange called findfiles,
 % but none of the ones I checked take arguments like this so we may need to
 % change this line.  It should check the directory specified by cwd and
 % find all files with the given extension. "files" is an array containing
@@ -46,25 +46,25 @@ files = findfiles(cwd,'sample\.mat$');  %There are several functions on the exch
 
 % iterate over each file found
 
-for fNum = 1:numel(files)
+for fNum = 1:numel(files) %sets up for loop to go through each file found
     [pname,fname,~] = fileparts(files{fNum});
     fprintf('Found file "%s" in directory:\n\t%s\n\n',fname,pname);
     % Prints the path and name of the nth file found in the directory cwd with
     % the desired extension, which for us is .wav, to the command window
     fprintf('Loading data...')
-    data = load(fname); %%%%%%%%% read in blocks at a time for WAV files
+    data = audioread(files{fNum}); %%%%%%%%% read in blocks at a time for WAV files
     % fills an array with the data from the current wav file
     fprintf(' Done!\n\n')
     % Prints "Done" and skips two lines
-    data_names = fieldnames(data); % List of names for each variable listed in data array
+    %data_names = fieldnames(data); % List of names for each variable listed in data array
     % I don't know what this will return for a wav file since the
     % fieldnames function seems to be for .mat files
-    fprintf('Found %d variables in file.  Assuming all are time series\n\n',numel(data_names))
+    fprintf('Found %d variables in file.  Assuming all are time series\n\n',numel(data))
     % takes number of names to determine number of variables in the wav file
     % and prints this number
-    for vNum = 1:numel(data_names) % Sets up for loop to go through each entry in the wav file
+    for vNum = 1:numel(data) % Sets up for loop to go through each entry in the wav file
         clear ts % Ensures there are no entries in sturcture ts
-        ts.data = data.(data_names{vNum});      %%%%%%%%%%%%
+        ts.data = data;      %%%%%%%%%%%%
         % The "data" entry in the structure ts is set to
         % the nth variable in the data array which should also be an array
         % determine block start/stop indices

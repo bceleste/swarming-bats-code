@@ -64,7 +64,7 @@ for fNum = 1:numel(files) %sets up for loop to go through each file found
     % and prints this number
     for vNum = 1:numel(data) % Sets up for loop to go through each entry in the wav file
         clear ts % Ensures there are no entries in sturcture ts
-        ts.data = data(vNum);      %%%%%%%%%%%%
+        ts.data = data;      %%%%%%%%%%%%
         % The "data" entry in the structure ts is set to
         % the nth variable in the data array which should also be an array
         % determine block start/stop indices

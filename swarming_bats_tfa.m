@@ -5,6 +5,7 @@ function tfa = swarming_bats_tfa(cwd)
 %% configurable parameters
 
 fs = 192e3;             % hardcode sampling rate
+nextFile=0;             % switch for skipping files
 
 % spectrogram options
 nOver = 3;              % sliding window increment for TFR
@@ -17,6 +18,7 @@ bSize = 1920;           % block length [samples]
 bIncr = 1344;           % block skip length [samples]
 tZoom = 0.3;            % time zoom window size [relative scaling]
 fZoom = 0.3;            % frequency zoom window size [relative scaling]
+blockSkip=0;            % Number of blocks to skip ahead by
 
 % plot options
 cRange = 26;            % color depth
@@ -99,6 +101,15 @@ for fNum = 1:numel(files) %sets up for loop to go through each file found
         % iterate over each time block
         
         for bNum = 1:nBlocks
+            if blockSkip~=0;
+                bNum=blockSkip;
+            end
+            if bNum>nBlocks
+                nextFile=1;
+            end
+            if nextFile
+                break
+            end
             % [ts.data,ts.fs] = audioread(fname,[bStart(bNum):bStop(bNum)]);
             
             % extract next block of signals
@@ -233,6 +244,8 @@ for fNum = 1:numel(files) %sets up for loop to go through each file found
 
                     % zoom until spacebar pressed
                     
+                    blockSkip=0;
+                    
                     switch button %a case statement which varies depending
                         %on which key was pressed
                     case 1          % left mouse button selects points
@@ -291,6 +304,19 @@ for fNum = 1:numel(files) %sets up for loop to go through each file found
                         tWin = get(ah1, 'xLim');
                         fWin = get(ah1, 'yLim');
                         
+                        % check if within boundaries
+                        
+                        if tNext < tWin(1) || tNext > tWin(end) || fNext < fWin(1) || fNext > fWin(end)
+                            warning('Cursor out of bounds, select another point.')
+                            continue %skips past the rest of the while loop
+                            %and starts the loop over
+                        end
+
+                        % accept new points
+                        
+                        tPos = tNext; %Sets time position to x-coordinate of click
+                        fPos = fNext; %sets freq position to y-coordinate of clic
+                        
                         % set larger window boundaries
                         
                         tDel = diff(tWin)/tZoom;
@@ -331,13 +357,40 @@ for fNum = 1:numel(files) %sets up for loop to go through each file found
                         %the array tfa
                         break
                         
-                    case 27         % escape moves to the next block
+                    case 27
+                        nextBlock=1;
+                        nextFile=1;
+                        break
+                        
+                    case 49         % escape moves to the next block
+                        blockSkip=bNum+1;
                         nextBlock = true; %This will later break out of the
                         %outside while loop and allow the program to move
                         %on to the next block
                         break
                         
-                    otherwise
+                     case 50
+                         blockSkip=bNum+10;
+                         nextBlock=1;
+                         break
+                         
+                    
+                     case 51
+                         blockSkip=bNum+100;
+                         nextBlock=1;
+                         break
+          
+                     case 52
+                         blockSkip=bNum+1000;
+                         nextBlock=1;
+                         break
+                         
+                     case 53
+                         blockSkip=bNum+10000;
+                         nextBlock=1;
+                         break
+                        
+                        otherwise
                         warning('Unknown command key used - key code "%d"', button)
                         %covers all other key possibilities
                     end
@@ -370,6 +423,9 @@ for fNum = 1:numel(files) %sets up for loop to go through each file found
             %that file
 
         end
+         if nextFile
+        nextFile=0;
+        break
+    end
     end
 end
-

@@ -104,12 +104,19 @@ if C(1,1)>xl(1) && C(1,1)<xl(2) && C(1,2)>yl(1) && C(1,2)<yl(2)
                 tfa_file=get(handles.filePush,'UserData'); %Gets the name the user chose for the file
             end
             
+            tfa_file=char(tfa_file);
             directory=fullfile('.',tfa_file); %Gets the path to the new file
             directory=char(directory); %Converts from a cell to a character array
             save(directory,'fName','tfa'); %creates a file in
             %the current directory named with the string determined above
             %and saves the array tfa along with name of the wav file to
             %that file
+            tfa=tfa';
+            formatSpec='\n%4d ms %4d kHz %6d dB';
+            fileID=strcat(tfa_file,'.txt');
+            fileID=fopen(fileID,'w');
+            fprintf(fileID,'%c',fName);
+            fprintf(fileID,formatSpec,tfa);
         end
         % reset variables for next iteration
         

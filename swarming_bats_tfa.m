@@ -23,7 +23,7 @@ function varargout = swarming_bats_tfa(varargin)
 
 % Edit the above text to modify the response to help swarming_bats_tfa
 
-% Last Modified by GUIDE v2.5 28-Jun-2016 18:01:13
+% Last Modified by GUIDE v2.5 18-Jul-2016 20:37:16
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -382,10 +382,33 @@ handles.ySlider.Value=-50;
 data=get(handles.xEdit,'UserData');
 fname=get(handles.xSlider,'UserData');
 sampRate=get(handles.secEdit,'UserData');
-tStart=round(sampRate*str2num(handles.secEdit.String));
+tStart=round(sampRate*str2double(handles.secEdit.String));
 mem=get(handles.regAxes,'UserData');
 mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9)];
 set(handles.regAxes,'UserData',mem);
 set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, data, dB, fname, handles));
 plotSpect(data,fname,tStart,sampRate,hObject,handles);
 set(gca, 'XLim', [str2num(handles.secEdit.String)*1000 (str2num(handles.secEdit.String))*1000-handles.xSlider.Value]);
+
+
+% --- Executes on button press in morePush.
+function morePush_Callback(hObject, eventdata, handles)
+% hObject    handle to morePush (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+data=get(handles.xEdit,'UserData');
+fname=get(handles.xSlider,'UserData');
+fs=get(handles.secEdit,'UserData');
+tStart=round(fs*str2double(hndles.secEdit.String));
+plotWidth=-handles.xSlider.Value;
+plotHeight=-handles.ySlider.Value;
+funcList=[];
+[sel,ok]=listdlg('PromptString','Select a function','SelectionMode','single','ListString',funcList);
+if ok==0;
+    return;
+else
+    switch funcList(sel)
+        %CASE 'exampFunc'
+            %exampleFunc(data,fname,fs,tStart);
+    end 
+end

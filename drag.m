@@ -111,12 +111,12 @@ if C(1,1)>xl(1) && C(1,1)<xl(2) && C(1,2)>yl(1) && C(1,2)<yl(2)
             %the current directory named with the string determined above
             %and saves the array tfa along with name of the wav file to
             %that file
-            tfa=tfa';
-            formatSpec='\n%4d ms %4d kHz %6d dB';
-            fileID=strcat(tfa_file,'.txt');
-            fileID=fopen(fileID,'w');
-            fprintf(fileID,'%c',fName);
-            fprintf(fileID,formatSpec,tfa);
+            tfa=tfa'; %transposes tfa array to match fprintf formatting
+            formatSpec='\n%4d ms %4d kHz %6d dB'; %Sets format for displaying data in text file
+            fileID=strcat(tfa_file,'.txt'); %changes extension of tfa_file to .txt
+            fileID=fopen(fileID,'w'); %creates a text file for saving data
+            fprintf(fileID,'%c',fName); %Prints the name of .wav file to text file
+            fprintf(fileID,formatSpec,tfa); %Prints coordinates of saved points to text file
         end
         % reset variables for next iteration
         

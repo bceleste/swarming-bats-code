@@ -396,19 +396,35 @@ function morePush_Callback(hObject, eventdata, handles)
 % hObject    handle to morePush (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-data=get(handles.xEdit,'UserData');
-fname=get(handles.xSlider,'UserData');
-fs=get(handles.secEdit,'UserData');
-tStart=round(fs*str2double(hndles.secEdit.String));
-plotWidth=-handles.xSlider.Value;
-plotHeight=-handles.ySlider.Value;
-funcList=[];
+
+%To add a function to the "More Options" list, first write the function and save it to this
+%program's directory.  Below are the available inputs for the function.
+
+
+fname=get(handles.xSlider,'UserData'); %Name of original .wav file
+fs=get(handles.secEdit,'UserData'); %sample rate of original .wav file
+tStart=round(fs*str2double(handles.secEdit.String)); %time of the leftmost edge of the plot when the button was clicked, in seconds
+plotWidth=-handles.xSlider.Value; %width of the plot when the button was clicked, in milliseconds
+plotHeight=-handles.ySlider.Value; %height of the plot when the button was clicked, in kilohertz
+data=get(handles.xEdit,'UserData'); %Vector containing all data entries from the original .wav file
+plotData=data(fs*tStart:fs*(tStart+.001*plotWidth)); %vector containing data entries from the original .wav file for the times displayed
+                                                     %on the plot when the button was clicked
+
+%Now add the function to funcList.  Put the name in single quotes and
+%separate entries with a comma
+%ex. funcList={'exampleFunc','otherFunc'};
+funcList={};
 [sel,ok]=listdlg('PromptString','Select a function','SelectionMode','single','ListString',funcList);
+choice=char(funcList(sel));
 if ok==0;
     return;
+%Finally write a case for the function which calls it.  After the line
+%"swith choice" and before its corresponding "end", write
+%"case 'functionName'", then on the next line call that function with all
+%its inputs
 else
-    switch funcList(sel)
-        %CASE 'exampFunc'
-            %exampleFunc(data,fname,fs,tStart);
+    switch choice
+        %case 'exampleFunc'
+            %exampleFunc(fname,fs,plotData);
     end 
 end

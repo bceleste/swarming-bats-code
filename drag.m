@@ -68,6 +68,9 @@ if C(1,1)>xl(1) && C(1,1)<xl(2) && C(1,2)>yl(1) && C(1,2)<yl(2)
         plotSpect(data,fName,tStart,sampRate,hObject, handles); %plots the spectrogram
         set(ah, 'xLim', [tPos-tDel/2 tPos+tDel/2]); %These two lines center the plot around the clicked point.  I know it happens twice, but it's necessary
         set(ah, 'YLim', [fPos-fDel/2 fPos+fDel/2]);
+        if ah.YLim(1)<0 %Checks if user tried to zoom below 0 Hz
+            ah.YLim=[0 fDel]; %Ensures plot cannot show negative frequencies to avoid indexing errors
+        end
         set(handles.dBText,'UserData',C); %Saves position of cursor when mouse buton was released
         click=0; %Sets flag to show that the mouse button is not being held down
         set(handles.timeText,'UserData',click); %Saves value of click

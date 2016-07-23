@@ -15,7 +15,9 @@ end
 
 %Locate all wav files in directory
 
-files = findfiles('wav',cwd);  %This makes an array of the names of all files with the extension '.wav'
+files1 = findfiles('wav',cwd);  %This makes an array of the names of all files with the extension '.wav'
+files2=findfiles('WAV',cwd);
+files=[files1 files2];
 %Initialize cells
 data=cell(1,numel(files)); %These need to be cells to work in the dialogue box
 fname=cell(1,numel(files));

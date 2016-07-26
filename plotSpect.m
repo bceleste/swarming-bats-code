@@ -36,6 +36,7 @@ markerSize = 25;        % set size of data points
         %elements in the data entry of ts
         if bStart>(numel(ts.data)-bSize)
             bStart=(numel(ts.data)-bSize);
+            handles.secEdit.String=num2str(bStart/fs);
             %ensures that it will never try to display past the end of the
             %file
         elseif bStart<=0
@@ -89,12 +90,12 @@ markerSize = 25;        % set size of data points
             %the signal from xx.
             %display(TFR);
             % remove analytic/imaginary parts
-            
+            w=msgbox('Please wait');
             TFR = TFR(1:end/2,:); %The Hilbert transform introduces imaginary parts
             %we don't care about, so this line and the one below it remove
             %the imaginary parts.  Specifically they take only the top half
             %of the arrays.
-
+            close(w);
             % plot spectrogram
             
             hold on %ensures next commands don't reset the current graph

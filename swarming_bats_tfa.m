@@ -23,7 +23,7 @@ function varargout = swarming_bats_tfa(varargin)
 
 % Edit the above text to modify the response to help swarming_bats_tfa
 
-% Last Modified by GUIDE v2.5 18-Jul-2016 20:37:16
+% Last Modified by GUIDE v2.5 25-Jul-2016 11:15:00
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -73,7 +73,7 @@ set(handles.pointCheck,'UserData',named);
 sampRate=fs;
 set(handles.regAxes,'UserData',[tStart,handles.xSlider.Value,handles.ySlider.Value,0,0,0,0,0,0,0,0,0,]);
 handles.dB=[];
-
+set(gcf, 'units', 'normalized', 'position', [0.05 0.15 0.9 0.8]);
 
 % Update handles structure
 guidata(hObject, handles);
@@ -170,6 +170,7 @@ function undoPush_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 mem=get(handles.regAxes,'UserData');
 if mem(4)~=0
+w=msgbox('Please wait');
 mem=[mem(4),mem(5),mem(6),mem(7),mem(8),mem(9),mem(10),mem(11),mem(12),0,0,0];
 set(handles.regAxes,'UserData',mem);
 %display(mem);
@@ -183,7 +184,7 @@ fname=get(handles.xSlider,'UserData');
 sampRate=get(handles.secEdit,'UserData');
 fs=sampRate;
 handles.secEdit.String=num2str(tStart/fs);
-plotSpect(data,fname,tStart,sampRate,hObject,handles);
+plotSpect(data,fname,tStart,sampRate,hObject,handles,w);
 set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, data,dB, fname, handles));
 set(gca, 'XLim', [str2num(handles.secEdit.String)*1000 (str2num(handles.secEdit.String))*1000-handles.xSlider.Value]);
 else
@@ -198,6 +199,7 @@ function secEdit_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of secEdit as text
 %        str2double(get(hObject,'String')) returns contents of secEdit as a double
+w=msgbox('Please wait');
 data=get(handles.xEdit,'UserData');
 fname=get(handles.xSlider,'UserData');
 handles.xSlider.Value=-40;
@@ -208,7 +210,7 @@ mem=get(handles.regAxes,'UserData');
 mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9)];
 set(handles.regAxes,'UserData',mem);
 set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, data, dB, fname, handles));
-plotSpect(data,fname,tStart,fs,hObject,handles);
+plotSpect(data,fname,tStart,fs,hObject,handles,w);
 set(gca, 'XLim', [str2num(handles.secEdit.String)*1000 (str2num(handles.secEdit.String))*1000-handles.xSlider.Value]);
 
 % --- Executes during object creation, after setting all properties.
@@ -293,6 +295,7 @@ function halfBackPush_Callback(hObject, eventdata, handles)
 % hObject    handle to halfBackPush (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+w=msgbox('Please wait');
 data=get(handles.xEdit,'UserData');
 fname=get(handles.xSlider,'UserData');
 sampRate=get(handles.secEdit,'UserData');
@@ -306,7 +309,7 @@ mem=get(handles.regAxes,'UserData');
 mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9)];
 set(handles.regAxes,'UserData',mem);
 set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, data, dB, fname, handles));
-plotSpect(data,fname,tStart,sampRate,hObject,handles);
+plotSpect(data,fname,tStart,sampRate,hObject,handles,w);
 set(gca, 'XLim', [str2num(handles.secEdit.String)*1000 (str2num(handles.secEdit.String))*1000-handles.xSlider.Value]);
 
 % --- Executes on button press in fullBackPush.
@@ -314,6 +317,7 @@ function fullBackPush_Callback(hObject, eventdata, handles)
 % hObject    handle to fullBackPush (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+w=msgbox('Please wait');
 data=get(handles.xEdit,'UserData');
 fname=get(handles.xSlider,'UserData');
 sampRate=get(handles.secEdit,'UserData');
@@ -327,7 +331,7 @@ mem=get(handles.regAxes,'UserData');
 mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9)];
 set(handles.regAxes,'UserData',mem);
 set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, data, dB, fname, handles));
-plotSpect(data,fname,tStart,sampRate,hObject,handles);
+plotSpect(data,fname,tStart,sampRate,hObject,handles,w);
 set(gca, 'XLim', [str2num(handles.secEdit.String)*1000 (str2num(handles.secEdit.String))*1000-handles.xSlider.Value]);
 
 % --- Executes on button press in halfForwardPush.
@@ -336,6 +340,7 @@ function halfForwardPush_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 %handles.secEdit.Text=num2str(str2num(handles.secEdit.String)+.5*str2num
+w=msgbox('Please wait');
 data=get(handles.xEdit,'UserData');
 fname=get(handles.xSlider,'UserData');
 sampRate=get(handles.secEdit,'UserData');
@@ -349,13 +354,14 @@ mem=get(handles.regAxes,'UserData');
 mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9)];
 set(handles.regAxes,'UserData',mem);
 set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, data, dB, fname, handles));
-plotSpect(data,fname,tStart,sampRate,hObject,handles);
+plotSpect(data,fname,tStart,sampRate,hObject,handles,w);
 set(gca, 'XLim', [str2num(handles.secEdit.String)*1000 (str2num(handles.secEdit.String))*1000-handles.xSlider.Value]);
 % --- Executes on button press in fullForwardPush.
 function fullForwardPush_Callback(hObject, eventdata, handles)
 % hObject    handle to fullForwardPush (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+w=msgbox('Please wait');
 data=get(handles.xEdit,'UserData');
 fname=get(handles.xSlider,'UserData');
 sampRate=get(handles.secEdit,'UserData');
@@ -369,7 +375,7 @@ mem=get(handles.regAxes,'UserData');
 mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9)];
 set(handles.regAxes,'UserData',mem);
 set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, data, dB, fname, handles));
-plotSpect(data,fname,tStart,sampRate,hObject,handles);
+plotSpect(data,fname,tStart,sampRate,hObject,handles,w);
 set(gca, 'XLim', [str2num(handles.secEdit.String)*1000 (str2num(handles.secEdit.String))*1000-handles.xSlider.Value]);
 
 % --- Executes on button press in resetPush.
@@ -377,6 +383,7 @@ function resetPush_Callback(hObject, eventdata, handles)
 % hObject    handle to resetPush (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+w=msgbox('Please wait');
 handles.yEdit.String=50;
 handles.ySlider.Value=-50;
 data=get(handles.xEdit,'UserData');
@@ -387,7 +394,7 @@ mem=get(handles.regAxes,'UserData');
 mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9)];
 set(handles.regAxes,'UserData',mem);
 set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, data, dB, fname, handles));
-plotSpect(data,fname,tStart,sampRate,hObject,handles);
+plotSpect(data,fname,tStart,sampRate,hObject,handles,w);
 set(gca, 'XLim', [str2num(handles.secEdit.String)*1000 (str2num(handles.secEdit.String))*1000-handles.xSlider.Value]);
 
 

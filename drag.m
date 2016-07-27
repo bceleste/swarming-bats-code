@@ -36,7 +36,9 @@ mem=get(handles.regAxes,'UserData');
 if C(1,1)>xl(1) && C(1,1)<xl(2) && C(1,2)>yl(1) && C(1,2)<yl(2)
     clickPoint=get(handles.dBText,'UserData'); %gets position of cursor when mouse button was pressed
     move=get(handles.freqText,'UserData'); %Checks flag to see if mouse moved since button was pressed
+    w=msgbox('Please wait');
     if ~move
+        
         % zoom to extent
         
         ah=handles.regAxes;
@@ -65,9 +67,13 @@ if C(1,1)>xl(1) && C(1,1)<xl(2) && C(1,2)>yl(1) && C(1,2)<yl(2)
         handles.secEdit.String=num2str(tStart/fs); %Sets the text box to display the correct starting time
         bStop=tStart+bSize;
         mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9)]; %Updates memory array
-        plotSpect(data,fName,tStart,sampRate,hObject, handles); %plots the spectrogram
+        plotSpect(data,fName,tStart,sampRate,hObject, handles,w); %plots the spectrogram    
         set(ah, 'xLim', [tPos-tDel/2 tPos+tDel/2]); %These two lines center the plot around the clicked point.  I know it happens twice, but it's necessary
         set(ah, 'YLim', [fPos-fDel/2 fPos+fDel/2]);
+        edge=xlim;
+        if edge(2)>numel(data)/fs*1000
+            set(ah, 'XLim', [numel(data)/fs*1000+handles.xSlider.Value numel(data)/fs*1000]);
+        end
         if ah.YLim(1)<0 %Checks if user tried to zoom below 0 Hz
             ah.YLim=[0 fDel]; %Ensures plot cannot show negative frequencies to avoid indexing errors
         end
@@ -127,6 +133,7 @@ if C(1,1)>xl(1) && C(1,1)<xl(2) && C(1,2)>yl(1) && C(1,2)<yl(2)
         %of the loop do not affect future iterations
         hold off %allows for the axes to be reset
         
+        
     else
         set(handles.dBText,'UserData',C);
         click=0; %Sets flag to show the mouse button is not being held down
@@ -138,6 +145,7 @@ if C(1,1)>xl(1) && C(1,1)<xl(2) && C(1,2)>yl(1) && C(1,2)<yl(2)
             'Yes',...
             'No',...
             'Yes');
+            close(w);
         switch choice
             case 'Yes'
                 newStart=fs*round(clickPoint(1,1)); %Determines which data entry is the first in the highlighted area

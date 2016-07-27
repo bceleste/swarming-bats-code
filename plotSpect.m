@@ -1,4 +1,4 @@
-function dB=plotSpect(data,fName,tStart,sampRate,hObject, handles)
+function dB=plotSpect(data,fName,tStart,sampRate,hObject, handles,w)
 
 %% configurable parameters
 
@@ -88,16 +88,16 @@ markerSize = 25;        % set size of data points
             %the file exchange.  It outputs the time-frequency
             %representation (spectrogram) and reassigned time-frequency representation of
             %the signal from xx.
-            %display(TFR);
+            
             % remove analytic/imaginary parts
-            w=msgbox('Please wait');
             TFR = TFR(1:end/2,:); %The Hilbert transform introduces imaginary parts
             %we don't care about, so this line and the one below it remove
             %the imaginary parts.  Specifically they take only the top half
             %of the arrays.
-            close(w);
             % plot spectrogram
-            
+            if exist('w','var');
+                close(w);
+            end
             hold on %ensures next commands don't reset the current graph
             axis xy; axis tight; view(0,90) %fixes the axes to show the first
             %quadrant, makes the axes the length of the data, and sets the

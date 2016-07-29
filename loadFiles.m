@@ -30,7 +30,8 @@ if ~ok
     fname=0;
     return;
 else
-    [data,fs]=audioread(files{sel}); %data is an array of all the numbers in the wav file
+    data=fileDatastore(files{sel},'ReadFcn',@audioread);
+    [~,fs]=audioread(files{sel},[1 1]); %data is an array of all the numbers in the wav file
     %representing the recorded sound, fs is the sample rate
     [~,fname,~]=fileparts(files{sel}); %gets name of wav file
 end

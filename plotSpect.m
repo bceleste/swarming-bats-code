@@ -17,7 +17,7 @@ tZoom = 0.3;            % time zoom window size [relative scaling]
 fZoom = 0.3;            % frequency zoom window size [relative scaling]
 
 % plot options
-cRange = 26;            % color depth
+cRange = 51;            % color depth
 fMin = 10;              % minimum frequency [kHz]
 fMax = 60;              % maximum frequency [kHz]
 winSize = [0 0 1 1];    % figure size
@@ -25,6 +25,8 @@ markerOpts = '+g';      % set options for data points
 markerSize = 25;        % set size of data points
 %for vNum = 1:numel(data{1,fNum}) % Sets up for loop to go through each entry in the wav file
         clear ts % Ensures there are no entries in sturcture ts
+        %data=readall(data);
+        %data=cell2mat(data);
         ts.data = data;      %%%%%%%%%%%%
         % The "data" entry in the structure ts is set to
         % the nth variable in the data array which should also be an array

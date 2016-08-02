@@ -1,4 +1,4 @@
-function dB=plotSpect(data,fName,tStart,sampRate,hObject, handles,w)
+function dB=plotSpect(fDir,totSamp,fName,tStart,sampRate,hObject, handles,w)
 
 %% configurable parameters
 
@@ -23,21 +23,14 @@ fMax = 60;              % maximum frequency [kHz]
 winSize = [0 0 1 1];    % figure size
 markerOpts = '+g';      % set options for data points
 markerSize = 25;        % set size of data points
-%for vNum = 1:numel(data{1,fNum}) % Sets up for loop to go through each entry in the wav file
+
         clear ts % Ensures there are no entries in sturcture ts
-        %data=readall(data);
-        %data=cell2mat(data);
-        ts.data = data;      %%%%%%%%%%%%
-        % The "data" entry in the structure ts is set to
-        % the nth variable in the data array which should also be an array
-        % determine block start/stop indices
-        %This next part determines where to divide the wav file into blocks
         bStart = tStart; % makes an array where the
         %first entry is 1, the next entry is 1343 more, and so on until the
         %point when adding another 1343 would exceed the current number of
         %elements in the data entry of ts
-        if bStart>(numel(ts.data)-bSize)
-            bStart=(numel(ts.data)-bSize);
+        if bStart>(totSamp-bSize)
+            bStart=(totSamp-bSize);
             handles.secEdit.String=num2str(bStart/fs);
             %ensures that it will never try to display past the end of the
             %file
@@ -47,8 +40,16 @@ markerSize = 25;        % set size of data points
             %of the file
         end
         bStop=bStart+bSize;
+        lim=[bStart bStop];
+        data=audioread(fDir,lim);
+        ts.data = data;      %%%%%%%%%%%%
+        % The "data" entry in the structure ts is set to
+        % the nth variable in the data array which should also be an array
+        % determine block start/stop indices
+        %This next part determines where to divide the wav file into blocks
+        
         %determines which data entry will be the last one displayed
-        totSec=numel(ts.data)/fs;
+        totSec=totSamp/fs;
         % makes an array where the first element is 1920, the next entry is
         % 1343 more, and so on until adding another 1343 would exceed one
         % less than the current number of elements in the array.  The last
@@ -69,7 +70,7 @@ markerSize = 25;        % set size of data points
             
             % extract next block of signals
             
-            xx = ts.data(bStart:bStop); %array xx is now all the
+            xx = ts.data; %array xx is now all the
             %values in the data entry of ts starting at one of the block
             %start values and ending at the corresponding block end value.
             %This line divided the data from the file into smaller blocks.
@@ -117,7 +118,7 @@ markerSize = 25;        % set size of data points
             if exist('handles.regAxes','var'), delete(handles.reAxes), end %clears axes
             ah = gca; %sets ah to the current axes
             dB=10*log10(abs(TFR)); %figures out decibel value for each frequency at each time
-            set (gcf, 'WindowButtonMotionFcn', @(object,eventdata) mouseMove(object,eventdata,hObject,fs,dB,tStart,data,fName,handles));
+            set (gcf, 'WindowButtonMotionFcn', @(object,eventdata) mouseMove(object,eventdata,hObject,fs,dB,tStart,fDir,totSamp,fName,handles));
 
             imagesc(tt*1e3,ff*1e-3,dB);  %plots the spectrogram.  Don't question how it works, it just does
             hold on

@@ -1,4 +1,4 @@
-function mouseMove(object,eventdata,hObject,fs,dB,tStart,data,fname,handles)
+function mouseMove(object,eventdata,hObject,fs,dB,tStart,fDir,totSamp,fname,handles)
 
 % Get current mouse position
 C=get(gca,'CurrentPoint');
@@ -28,7 +28,7 @@ if C(1,1)>xl(1) && C(1,1)<xl(2) && C(1,2)>yl(1) && C(1,2)<yl(2) && C(1,1)>=0 && 
     handles.dBText.String=num2str(dB(round(C(1,2)*1000/(fs/512)),round(C(1,1)/1000*fs-tStart)));
     move=1; %flag to confirm that mouse moved since the mouse button was pressed
     set(handles.freqText,'UserData',move); %saves value of move to pass into drag
-    set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, data, dB, fname, handles));
+    set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, fDir, totSamp, dB, fname, handles));
     guidata(hObject,handles); %updates all handles
     drawnow;
 else

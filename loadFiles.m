@@ -1,4 +1,4 @@
-function [data,fs,fname]=loadFiles()
+function [totSamp,fs,fname,fDir]=loadFiles()
 
 % specify the current working directory
 
@@ -30,9 +30,9 @@ if ~ok
     fname=0;
     return;
 else
-    %data=fileDatastore(files{sel},'ReadFcn',@audioread);
-    %[~,fs]=audioread(files{sel},[1 1]); %data is an array of all the numbers in the wav file
-    [data,fs]=audioread(files{sel});
-    %representing the recorded sound, fs is the sample rate
-    [~,fname,~]=fileparts(files{sel}); %gets name of wav file
+    data=audioinfo(files{sel});
+    totSamp=data.TotalSamples;
+    fs=data.SampleRate;
+    fname=data.Title;
+    fDir=files{sel};
 end

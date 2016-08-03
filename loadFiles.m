@@ -1,4 +1,4 @@
-function [totSamp,fs,fname,fDir]=loadFiles()
+function [totSamp,fs,fDir]=loadFiles()
 
 % specify the current working directory
 
@@ -33,6 +33,5 @@ else
     data=audioinfo(files{sel});
     totSamp=data.TotalSamples;
     fs=data.SampleRate;
-    fname=data.Title;
     fDir=files{sel};
 end

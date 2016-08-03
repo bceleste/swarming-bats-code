@@ -1,4 +1,4 @@
-function drag(object, eventdata, sampRate, hObject, fDir, totSamp, dB, fName, handles)
+function drag(object, eventdata, sampRate, hObject, fDir, totSamp, dB, handles)
 %% configurable parameters
 
 fs = sampRate;             % hardcode sampling rate
@@ -67,7 +67,7 @@ if C(1,1)>xl(1) && C(1,1)<xl(2) && C(1,2)>yl(1) && C(1,2)<yl(2)
         handles.secEdit.String=num2str(tStart/fs); %Sets the text box to display the correct starting time
         bStop=tStart+bSize;
         mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9)]; %Updates memory array
-        plotSpect(fDir,totSamp,fName,tStart,sampRate,hObject, handles,w); %plots the spectrogram    
+        dB=plotSpect(fDir,totSamp,tStart,sampRate,hObject, handles,w); %plots the spectrogram    
         set(ah, 'xLim', [tPos-tDel/2 tPos+tDel/2]); %These two lines center the plot around the clicked point.  I know it happens twice, but it's necessary
         set(ah, 'YLim', [fPos-fDel/2 fPos+fDel/2]);
         edge=xlim;
@@ -82,8 +82,8 @@ if C(1,1)>xl(1) && C(1,1)<xl(2) && C(1,2)>yl(1) && C(1,2)<yl(2)
         set(handles.timeText,'UserData',click); %Saves value of click
         set(handles.regAxes,'UserData',mem); %Saves memory array
         guidata(hObject, eventdata); %Updates all handles
-        set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, fDir,totSamp,dB, fName, handles));
-        set (gcf, 'WindowButtonMotionFcn', @(object,eventdata) mouseMove(object,eventdata,hObject,fs,dB,tStart,fDir,totSamp,fName,handles));
+        set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, fDir,totSamp,dB, handles));
+        set (gcf, 'WindowButtonMotionFcn', @(object,eventdata) mouseMove(object,eventdata,hObject,fs,dB,tStart,fDir,totSamp,handles));
         % save data to file in current directory
         if handles.pointCheck.Value
             % add marker to point
@@ -116,6 +116,7 @@ if C(1,1)>xl(1) && C(1,1)<xl(2) && C(1,2)>yl(1) && C(1,2)<yl(2)
             tfa_file=char(tfa_file);
             directory=fullfile('.',tfa_file); %Gets the path to the new file
             directory=char(directory); %Converts from a cell to a character array
+            [~,fName]=fileparts(fDir);
             save(directory,'fName','tfa'); %creates a file in
             %the current directory named with the string determined above
             %and saves the array tfa along with name of the wav file to

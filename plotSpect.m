@@ -1,4 +1,4 @@
-function dB=plotSpect(fDir,totSamp,fName,tStart,sampRate,hObject, handles,w)
+function dB=plotSpect(fDir,totSamp,tStart,sampRate,hObject, handles,w)
 
 %% configurable parameters
 
@@ -42,6 +42,7 @@ markerSize = 25;        % set size of data points
         bStop=bStart+bSize;
         lim=[bStart bStop];
         data=audioread(fDir,lim);
+        [~,fName]=fileparts(fDir);
         ts.data = data;      %%%%%%%%%%%%
         % The "data" entry in the structure ts is set to
         % the nth variable in the data array which should also be an array
@@ -118,7 +119,7 @@ markerSize = 25;        % set size of data points
             if exist('handles.regAxes','var'), delete(handles.reAxes), end %clears axes
             ah = gca; %sets ah to the current axes
             dB=10*log10(abs(TFR)); %figures out decibel value for each frequency at each time
-            set (gcf, 'WindowButtonMotionFcn', @(object,eventdata) mouseMove(object,eventdata,hObject,fs,dB,tStart,fDir,totSamp,fName,handles));
+            set (gcf, 'WindowButtonMotionFcn', @(object,eventdata) mouseMove(object,eventdata,hObject,fs,dB,tStart,fDir,totSamp,handles));
 
             imagesc(tt*1e3,ff*1e-3,dB);  %plots the spectrogram.  Don't question how it works, it just does
             hold on
@@ -132,4 +133,5 @@ markerSize = 25;        % set size of data points
             %These lines set parameters for the plot, specifically the
             %color set, creating a color scale to display next to the plot,
             %and labeling x- and y-axes.
+            set (gcf, 'WindowButtonMotionFcn', @(object,eventdata) mouseMove(object,eventdata,hObject,fs,dB,tStart,fDir,totSamp,handles));
             set(ah, 'yLim', [fMin fMax]); %sets the y-limits of the plot equal to the max and min frequencies found in the file

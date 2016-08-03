@@ -1,4 +1,4 @@
-function mouseMove(object,eventdata,hObject,fs,dB,tStart,fDir,totSamp,fname,handles)
+function mouseMove(object,eventdata,hObject,fs,dB,tStart,fDir,totSamp,handles)
 
 % Get current mouse position
 C=get(gca,'CurrentPoint');

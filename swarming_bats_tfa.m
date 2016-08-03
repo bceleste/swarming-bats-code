@@ -56,7 +56,7 @@ function swarming_bats_tfa_OpeningFcn(hObject, eventdata, handles, varargin)
 
 
 % Choose default command line output for swarming_bats_tfa
- [totSamp,fs,fname,fDir]=loadFiles();
+ [totSamp,fs,fDir]=loadFiles();
  handles.output = hObject;
  %if data==0;
      %return;
@@ -64,7 +64,6 @@ function swarming_bats_tfa_OpeningFcn(hObject, eventdata, handles, varargin)
 tStart=1; move=0; click=0; srow=0; tfa=[]; named=0;
 set(handles.xEdit, 'UserData', fDir);
 set(handles.morePush, 'UserData', totSamp);
-set(handles.xSlider, 'UserData', fname);
 set(handles.secEdit,'UserData', fs);
 set(handles.freqText,'UserData',move);
 set(handles.timeText,'UserData',click);
@@ -81,10 +80,10 @@ guidata(hObject, handles);
 
 % UIWAIT makes swarming_bats_tfa wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
-dB=plotSpect(fDir,totSamp,fname,tStart,sampRate,hObject,handles);
-set (gcf, 'WindowButtonDownFcn', @(object,eventdata) clickStart(object,eventdata,fs,hObject,fDir,totSamp,dB,fname,handles));
-set (gcf, 'WindowButtonMotionFcn', @(object,eventdata) mouseMove(object,eventdata,hObject,fs,dB,tStart,fDir,totSamp,fname,handles));
-set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, fDir,totSamp, dB, fname, handles));
+dB=plotSpect(fDir,totSamp,tStart,sampRate,hObject,handles);
+set (gcf, 'WindowButtonDownFcn', @(object,eventdata) clickStart(object,eventdata,fs,hObject,fDir,totSamp,dB,handles));
+set (gcf, 'WindowButtonMotionFcn', @(object,eventdata) mouseMove(object,eventdata,hObject,fs,dB,tStart,fDir,totSamp,handles));
+set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, fDir,totSamp, dB, handles));
 % --- Outputs from this function are returned to the command line.
 function varargout = swarming_bats_tfa_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
@@ -181,13 +180,12 @@ handles.xEdit.String=num2str(-handles.xSlider.Value);
 handles.ySlider.Value=mem(3);
 handles.yEdit.String=num2str(-handles.ySlider.Value);
 fDir=get(handles.xEdit,'UserData');
-fname=get(handles.xSlider,'UserData');
 sampRate=get(handles.secEdit,'UserData');
 totSamp=get(handles.morePush,'UserData');
 fs=sampRate;
 handles.secEdit.String=num2str(tStart/fs);
-plotSpect(fDir,totSamp,fname,tStart,sampRate,hObject,handles,w);
-set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, fDir,totSamp,dB, fname, handles));
+plotSpect(fDir,totSamp,tStart,sampRate,hObject,handles,w);
+set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, fDir,totSamp,dB,  handles));
 set(gca, 'XLim', [str2num(handles.secEdit.String)*1000 (str2num(handles.secEdit.String))*1000-handles.xSlider.Value]);
 else
     fprintf('Cannot undo\n');
@@ -203,7 +201,6 @@ function secEdit_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of secEdit as a double
 w=msgbox('Please wait');
 fDir=get(handles.xEdit,'UserData');
-fname=get(handles.xSlider,'UserData');
 handles.xSlider.Value=-40;
 handles.xEdit.String=40;
 fs=get(handles.secEdit,'UserData');
@@ -212,8 +209,8 @@ totSamp=get(handles.morePush,'UserData');
 mem=get(handles.regAxes,'UserData');
 mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9)];
 set(handles.regAxes,'UserData',mem);
-set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, fDir,totSamp, dB, fname, handles));
-plotSpect(fDir,totSamp,fname,tStart,fs,hObject,handles,w);
+set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, fDir,totSamp, dB,  handles));
+plotSpect(fDir,totSamp,tStart,fs,hObject,handles,w);
 set(gca, 'XLim', [str2num(handles.secEdit.String)*1000 (str2num(handles.secEdit.String))*1000-handles.xSlider.Value]);
 
 % --- Executes during object creation, after setting all properties.
@@ -300,7 +297,6 @@ function halfBackPush_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 w=msgbox('Please wait');
 fDir=get(handles.xEdit,'UserData');
-fname=get(handles.xSlider,'UserData');
 sampRate=get(handles.secEdit,'UserData');
 totSamp=get(handles.morePush,'UserData');
 tStart=round(sampRate*str2num(handles.secEdit.String));
@@ -312,8 +308,8 @@ handles.secEdit.String=num2str(tStart/sampRate);
 mem=get(handles.regAxes,'UserData');
 mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9)];
 set(handles.regAxes,'UserData',mem);
-set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, fDir, totSamp, dB, fname, handles));
-plotSpect(fDir,totSamp,fname,tStart,sampRate,hObject,handles,w);
+set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, fDir, totSamp, dB,  handles));
+plotSpect(fDir,totSamp,tStart,sampRate,hObject,handles,w);
 set(gca, 'XLim', [str2num(handles.secEdit.String)*1000 (str2num(handles.secEdit.String))*1000-handles.xSlider.Value]);
 
 % --- Executes on button press in fullBackPush.
@@ -323,7 +319,6 @@ function fullBackPush_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 w=msgbox('Please wait');
 fDir=get(handles.xEdit,'UserData');
-fname=get(handles.xSlider,'UserData');
 sampRate=get(handles.secEdit,'UserData');
 totSamp=get(handles.morePush,'UserData');
 tStart=round(sampRate*str2num(handles.secEdit.String));
@@ -335,8 +330,8 @@ handles.secEdit.String=num2str(tStart/sampRate);
 mem=get(handles.regAxes,'UserData');
 mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9)];
 set(handles.regAxes,'UserData',mem);
-set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, fDir, totSamp, dB, fname, handles));
-plotSpect(fDir,totSamp,fname,tStart,sampRate,hObject,handles,w);
+set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, fDir, totSamp, dB,  handles));
+plotSpect(fDir,totSamp,tStart,sampRate,hObject,handles,w);
 set(gca, 'XLim', [str2num(handles.secEdit.String)*1000 (str2num(handles.secEdit.String))*1000-handles.xSlider.Value]);
 
 % --- Executes on button press in halfForwardPush.
@@ -347,7 +342,6 @@ function halfForwardPush_Callback(hObject, eventdata, handles)
 %handles.secEdit.Text=num2str(str2num(handles.secEdit.String)+.5*str2num
 w=msgbox('Please wait');
 fDir=get(handles.xEdit,'UserData');
-fname=get(handles.xSlider,'UserData');
 sampRate=get(handles.secEdit,'UserData');
 totSamp=get(handles.morePush,'UserData');
 tStart=round(sampRate*str2num(handles.secEdit.String));
@@ -359,8 +353,8 @@ handles.secEdit.String=num2str(tStart/sampRate);
 mem=get(handles.regAxes,'UserData');
 mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9)];
 set(handles.regAxes,'UserData',mem);
-set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, fDir, totSamp, dB, fname, handles));
-plotSpect(fDir,totSamp,fname,tStart,sampRate,hObject,handles,w);
+set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, fDir, totSamp, dB,  handles));
+plotSpect(fDir,totSamp,tStart,sampRate,hObject,handles,w);
 set(gca, 'XLim', [str2num(handles.secEdit.String)*1000 (str2num(handles.secEdit.String))*1000-handles.xSlider.Value]);
 % --- Executes on button press in fullForwardPush.
 function fullForwardPush_Callback(hObject, eventdata, handles)
@@ -369,7 +363,6 @@ function fullForwardPush_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 w=msgbox('Please wait');
 fDir=get(handles.xEdit,'UserData');
-fname=get(handles.xSlider,'UserData');
 sampRate=get(handles.secEdit,'UserData');
 totSamp=get(handles.morePush,'UserData');
 tStart=round(sampRate*str2num(handles.secEdit.String));
@@ -381,8 +374,8 @@ handles.secEdit.String=num2str(tStart/sampRate);
 mem=get(handles.regAxes,'UserData');
 mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9)];
 set(handles.regAxes,'UserData',mem);
-set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, fDir, totSamp, dB, fname, handles));
-plotSpect(fDir,totSamp,fname,tStart,sampRate,hObject,handles,w);
+set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, fDir, totSamp, dB,  handles));
+plotSpect(fDir,totSamp,tStart,sampRate,hObject,handles,w);
 set(gca, 'XLim', [str2num(handles.secEdit.String)*1000 (str2num(handles.secEdit.String))*1000-handles.xSlider.Value]);
 
 % --- Executes on button press in resetPush.
@@ -394,15 +387,14 @@ w=msgbox('Please wait');
 handles.yEdit.String=50;
 handles.ySlider.Value=-50;
 fDir=get(handles.xEdit,'UserData');
-fname=get(handles.xSlider,'UserData');
 sampRate=get(handles.secEdit,'UserData');
 totSamp=get(handles.morePush,'UserData');
 tStart=round(sampRate*str2double(handles.secEdit.String));
 mem=get(handles.regAxes,'UserData');
 mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9)];
 set(handles.regAxes,'UserData',mem);
-set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, fDir, totSamp, dB, fname, handles));
-plotSpect(fDir,totSamp,fname,tStart,sampRate,hObject,handles,w);
+set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, fDir, totSamp, dB,  handles));
+plotSpect(fDir,totSamp,tStart,sampRate,hObject,handles,w);
 set(gca, 'XLim', [str2num(handles.secEdit.String)*1000 (str2num(handles.secEdit.String))*1000-handles.xSlider.Value]);
 
 
@@ -416,7 +408,6 @@ function morePush_Callback(hObject, eventdata, handles)
 %program's directory.  Below are the available inputs for the function.
 
 
-fname=get(handles.xSlider,'UserData'); %Name of original .wav file
 fs=get(handles.secEdit,'UserData'); %sample rate of original .wav file
 tStart=round(fs*str2double(handles.secEdit.String)); %time of the leftmost edge of the plot when the button was clicked, in seconds
 plotWidth=-handles.xSlider.Value; %width of the plot when the button was clicked, in milliseconds
@@ -440,6 +431,6 @@ if ok==0;
 else
     switch choice
         %case 'exampleFunc'
-            %exampleFunc(fname,fs,plotData);
+            %exampleFunc(fs,plotData);
     end 
 end

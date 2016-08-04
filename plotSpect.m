@@ -17,7 +17,7 @@ tZoom = 0.3;            % time zoom window size [relative scaling]
 fZoom = 0.3;            % frequency zoom window size [relative scaling]
 
 % plot options
-cRange = 51;            % color depth
+cRange = 21;            % color depth
 fMin = 10;              % minimum frequency [kHz]
 fMax = 60;              % maximum frequency [kHz]
 winSize = [0 0 1 1];    % figure size
@@ -102,6 +102,13 @@ markerSize = 25;        % set size of data points
             if exist('w','var');
                 close(w);
             end
+            
+            if exist('handles.regAxes','var'), delete(handles.reAxes), end %clears axes
+            ah = gca; %sets ah to the current axes
+            dB=10*log10(abs(TFR)); %figures out decibel value for each frequency at each time
+            set (gcf, 'WindowButtonMotionFcn', @(object,eventdata) mouseMove(object,eventdata,hObject,fs,dB,tStart,fDir,totSamp,handles));
+            maxdB=max(dB);
+            maxdB=max(maxdB);
             hold on %ensures next commands don't reset the current graph
             axis xy; axis tight; view(0,90) %fixes the axes to show the first
             %quadrant, makes the axes the length of the data, and sets the
@@ -109,29 +116,17 @@ markerSize = 25;        % set size of data points
             colorbar %adds a colorbar to the current axes
             colormap(hot) %selects the colors used to create the plot
             cLim = get(gca,'clim'); 
-            set(gca, 'cLim', [cLim(2)-cRange cLim(2)]); %sets limits on colors used
+            cMax = str2double(handles.colorEdit.String);
+            set(gca, 'cLim', [cLim(2)-cRange+cMax+maxdB cLim(2)+cMax+maxdB]); %sets limits on colors used
             set(gca, 'XTick',[]); %turns off the numbers on the x-axis
             ylabel('Frequency (kHz)','fontsize',16) %labels y-axis
             title(sprintf('%s- %d seconds long',fName,totSec),'fontsize',16,'interpreter','none')
             % labels the graph with file name, which block is currently
             % being displayed, and how many total blocks there are
-            
-            if exist('handles.regAxes','var'), delete(handles.reAxes), end %clears axes
-            ah = gca; %sets ah to the current axes
-            dB=10*log10(abs(TFR)); %figures out decibel value for each frequency at each time
-            set (gcf, 'WindowButtonMotionFcn', @(object,eventdata) mouseMove(object,eventdata,hObject,fs,dB,tStart,fDir,totSamp,handles));
-
-            imagesc(tt*1e3,ff*1e-3,dB);  %plots the spectrogram.  Don't question how it works, it just does
-            hold on
-            axis xy; axis tight; view(0,90)
-            colorbar
-            colormap(hot)
-            cLim = get(gca,'clim');
-            set(gca, 'cLim', [cLim(2)-cRange cLim(2)]);
             xlabel('Time','fontsize',16)
-            ylabel('Frequency (kHz)','fontsize',16)
             %These lines set parameters for the plot, specifically the
             %color set, creating a color scale to display next to the plot,
             %and labeling x- and y-axes.
+            imagesc(tt*1e3,ff*1e-3,dB);  %plots the spectrogram.  Don't question how it works, it just does
             set (gcf, 'WindowButtonMotionFcn', @(object,eventdata) mouseMove(object,eventdata,hObject,fs,dB,tStart,fDir,totSamp,handles));
             set(ah, 'yLim', [fMin fMax]); %sets the y-limits of the plot equal to the max and min frequencies found in the file

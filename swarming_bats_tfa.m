@@ -23,7 +23,7 @@ function varargout = swarming_bats_tfa(varargin)
 
 % Edit the above text to modify the response to help swarming_bats_tfa
 
-% Last Modified by GUIDE v2.5 25-Jul-2016 11:15:00
+% Last Modified by GUIDE v2.5 03-Aug-2016 23:04:34
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -433,4 +433,34 @@ else
         %case 'exampleFunc'
             %exampleFunc(fs,plotData);
     end 
+end
+
+
+
+function colorEdit_Callback(hObject, eventdata, handles)
+% hObject    handle to colorEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of colorEdit as text
+%        str2double(get(hObject,'String')) returns contents of colorEdit as a double
+w=msgbox('Please wait');
+handles.yEdit.String=50;
+handles.ySlider.Value=-50;
+fDir=get(handles.xEdit,'UserData');
+sampRate=get(handles.secEdit,'UserData');
+totSamp=get(handles.morePush,'UserData');
+tStart=round(sampRate*str2double(handles.secEdit.String));
+plotSpect(fDir,totSamp,tStart,sampRate,hObject,handles,w);
+
+% --- Executes during object creation, after setting all properties.
+function colorEdit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to colorEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end

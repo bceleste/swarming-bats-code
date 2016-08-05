@@ -65,6 +65,7 @@ if C(1,1)>xl(1) && C(1,1)<xl(2) && C(1,2)>yl(1) && C(1,2)<yl(2)
         set(ah, 'xLim', [tPos-tDel/2 tPos+tDel/2]); %centers the plot around the clicked point
         tStart=round(handles.regAxes.XLim(1)*fs/1000); %Determines which data entry is the first to be plotted in the new zoom
         handles.secEdit.String=num2str(tStart/fs); %Sets the text box to display the correct starting time
+        set(handles.xSlider,'UserData',0);
         bStop=tStart+bSize;
         mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9)]; %Updates memory array
         dB=plotSpect(fDir,totSamp,tStart,sampRate,hObject, handles,w); %plots the spectrogram    

@@ -107,17 +107,24 @@ markerSize = 25;        % set size of data points
             ah = gca; %sets ah to the current axes
             dB=10*log10(abs(TFR)); %figures out decibel value for each frequency at each time
             set (gcf, 'WindowButtonMotionFcn', @(object,eventdata) mouseMove(object,eventdata,hObject,fs,dB,tStart,fDir,totSamp,handles));
-            maxdB=max(dB);
-            maxdB=max(maxdB);
+            editCheck=get(handles.xSlider,'UserData');
+            if editCheck
+                maxdB=str2double(handles.colorEdit.String);
+            else
+                usefuldB=dB';
+                botRow=size(xx)*21;
+                topRow=size(xx)*123-1;
+                maxdB=max(usefuldB(botRow:topRow));
+                handles.colorEdit.String=num2str(maxdB);
+            end
             hold on %ensures next commands don't reset the current graph
             axis xy; axis tight; view(0,90) %fixes the axes to show the first
             %quadrant, makes the axes the length of the data, and sets the
             %elevation for the 3D graph without rotating the plot.
             colorbar %adds a colorbar to the current axes
             colormap(hot) %selects the colors used to create the plot
-            cLim = get(gca,'clim'); 
-            cMax = str2double(handles.colorEdit.String);
-            set(gca, 'cLim', [cLim(2)-cRange+cMax+maxdB cLim(2)+cMax+maxdB]); %sets limits on colors used
+            %cLim = get(gca,'clim'); 
+            set(gca, 'cLim', [-cRange+maxdB maxdB]); %sets limits on colors used
             set(gca, 'XTick',[]); %turns off the numbers on the x-axis
             ylabel('Frequency (kHz)','fontsize',16) %labels y-axis
             title(sprintf('%s- %d seconds long',fName,totSec),'fontsize',16,'interpreter','none')

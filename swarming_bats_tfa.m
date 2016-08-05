@@ -70,6 +70,7 @@ set(handles.timeText,'UserData',click);
 set(handles.yEdit,'UserData',srow);
 set(handles.resetPush,'UserData',tfa);
 set(handles.pointCheck,'UserData',named);
+set(handles.xSlider,'UserData',0);
 sampRate=fs;
 set(handles.regAxes,'UserData',[tStart,handles.xSlider.Value,handles.ySlider.Value,0,0,0,0,0,0,0,0,0,]);
 handles.dB=[];
@@ -182,6 +183,7 @@ handles.yEdit.String=num2str(-handles.ySlider.Value);
 fDir=get(handles.xEdit,'UserData');
 sampRate=get(handles.secEdit,'UserData');
 totSamp=get(handles.morePush,'UserData');
+set(handles.xSlider,'UserData',0);
 fs=sampRate;
 handles.secEdit.String=num2str(tStart/fs);
 plotSpect(fDir,totSamp,tStart,sampRate,hObject,handles,w);
@@ -299,6 +301,7 @@ w=msgbox('Please wait');
 fDir=get(handles.xEdit,'UserData');
 sampRate=get(handles.secEdit,'UserData');
 totSamp=get(handles.morePush,'UserData');
+set(handles.xSlider,'UserData',0);
 tStart=round(sampRate*str2num(handles.secEdit.String));
 tStart=tStart+(.5*handles.xSlider.Value/1000*sampRate);
 if tStart<1
@@ -321,6 +324,7 @@ w=msgbox('Please wait');
 fDir=get(handles.xEdit,'UserData');
 sampRate=get(handles.secEdit,'UserData');
 totSamp=get(handles.morePush,'UserData');
+set(handles.xSlider,'UserData',0);
 tStart=round(sampRate*str2num(handles.secEdit.String));
 tStart=tStart+(handles.xSlider.Value/1000*sampRate);
 if tStart<1
@@ -344,6 +348,7 @@ w=msgbox('Please wait');
 fDir=get(handles.xEdit,'UserData');
 sampRate=get(handles.secEdit,'UserData');
 totSamp=get(handles.morePush,'UserData');
+set(handles.xSlider,'UserData',0);
 tStart=round(sampRate*str2num(handles.secEdit.String));
 tStart=tStart-(.5*handles.xSlider.Value/1000*sampRate);
 if tStart>(totSamp-.04*sampRate)
@@ -365,6 +370,7 @@ w=msgbox('Please wait');
 fDir=get(handles.xEdit,'UserData');
 sampRate=get(handles.secEdit,'UserData');
 totSamp=get(handles.morePush,'UserData');
+set(handles.xSlider,'UserData',0);
 tStart=round(sampRate*str2num(handles.secEdit.String));
 tStart=tStart-(handles.xSlider.Value/1000*sampRate);
 if tStart>(totSamp-.04*sampRate)
@@ -389,6 +395,7 @@ handles.ySlider.Value=-50;
 fDir=get(handles.xEdit,'UserData');
 sampRate=get(handles.secEdit,'UserData');
 totSamp=get(handles.morePush,'UserData');
+set(handles.xSlider,'UserData',0);
 tStart=round(sampRate*str2double(handles.secEdit.String));
 mem=get(handles.regAxes,'UserData');
 mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9)];
@@ -451,6 +458,7 @@ fDir=get(handles.xEdit,'UserData');
 sampRate=get(handles.secEdit,'UserData');
 totSamp=get(handles.morePush,'UserData');
 tStart=round(sampRate*str2double(handles.secEdit.String));
+set(handles.xSlider,'UserData',1);
 plotSpect(fDir,totSamp,tStart,sampRate,hObject,handles,w);
 
 % --- Executes during object creation, after setting all properties.

@@ -111,10 +111,21 @@ markerSize = 25;        % set size of data points
             if editCheck
                 maxdB=str2double(handles.colorEdit.String);
             else
+                set(ah, 'xLim', [ str2double(handles.secEdit.String) str2double(handles.secEdit.String)-handles.xSlider.Value]);
+                set(ah, 'yLim', [fMin fMax]); %sets the y-limits of the plot equal to the max and min frequencies found in the file
+                xl=xlim;
+                yl=ylim;
                 usefuldB=dB';
-                botRow=size(xx)*21;
-                topRow=size(xx)*123-1;
-                maxdB=max(usefuldB(botRow:topRow));
+                rowsize=size(xx);
+                botRow=round(rowsize(1)*yl(1)*1000/(fs/nfft));
+                topRow=round(rowsize(1)*(yl(2)+1)*1000/(fs/nfft)-1);
+                usefuldB=usefuldB(botRow:topRow);
+                colsize=size(usefuldB);
+                leftcol=round(colsize(2)/rowsize(1)*xl(1)/1000*fs-tStart+2);
+                rightcol=round(colsize(2)/rowsize(1)*(xl(2)+1)/1000*fs-tStart-1);
+                usefuldB=usefuldB';
+                usefuldB=usefuldB(leftcol:rightcol);
+                maxdB=max(usefuldB);
                 handles.colorEdit.String=num2str(maxdB);
             end
             hold on %ensures next commands don't reset the current graph

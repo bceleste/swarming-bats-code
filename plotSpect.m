@@ -111,18 +111,26 @@ markerSize = 25;        % set size of data points
             if editCheck
                 maxdB=str2double(handles.colorEdit.String);
             else
-                set(ah, 'xLim', [ str2double(handles.secEdit.String) str2double(handles.secEdit.String)-handles.xSlider.Value]);
-                set(ah, 'yLim', [fMin fMax]); %sets the y-limits of the plot equal to the max and min frequencies found in the file
+                set(ah, 'xLim', [ str2double(handles.secEdit.String)*1000 str2double(handles.secEdit.String)*1000-handles.xSlider.Value]);
                 xl=xlim;
                 yl=ylim;
+                if yl(2)==1
+                    yl=[fMin fMax];
+                end
                 usefuldB=dB';
                 rowsize=size(xx);
-                botRow=round(rowsize(1)*yl(1)*1000/(fs/nfft));
-                topRow=round(rowsize(1)*(yl(2)+1)*1000/(fs/nfft)-1);
+                botRow=round(rowsize(1)*(yl(1)*1000/(fs/nfft)-1))+1;
+                if botRow<1
+                    botRow=1;
+                end
+                topRow=round(rowsize(1)*yl(2)*1000/(fs/nfft));
                 usefuldB=usefuldB(botRow:topRow);
                 colsize=size(usefuldB);
-                leftcol=round(colsize(2)/rowsize(1)*xl(1)/1000*fs-tStart+2);
-                rightcol=round(colsize(2)/rowsize(1)*(xl(2)+1)/1000*fs-tStart-1);
+                leftcol=round(colsize(2)/rowsize(1)*(xl(1)/1000*fs-tStart))+1;
+                if leftcol<1
+                    leftcol=1;
+                end
+                rightcol=round(colsize(2)/rowsize(1)*(xl(2)/1000*fs-tStart+1))-1;
                 usefuldB=usefuldB';
                 usefuldB=usefuldB(leftcol:rightcol);
                 maxdB=max(usefuldB);

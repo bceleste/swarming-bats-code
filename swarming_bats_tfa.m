@@ -23,7 +23,7 @@ function varargout = swarming_bats_tfa(varargin)
 
 % Edit the above text to modify the response to help swarming_bats_tfa
 
-% Last Modified by GUIDE v2.5 03-Aug-2016 23:04:34
+% Last Modified by GUIDE v2.5 10-Aug-2016 00:07:00
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -62,6 +62,7 @@ function swarming_bats_tfa_OpeningFcn(hObject, eventdata, handles, varargin)
      %return;
  %end
 tStart=1; move=0; click=0; srow=0; tfa=[]; named=0;
+set(handles.nfftList,'Value',3);
 set(handles.xEdit, 'UserData', fDir);
 set(handles.morePush, 'UserData', totSamp);
 set(handles.secEdit,'UserData', fs);
@@ -303,7 +304,7 @@ sampRate=get(handles.secEdit,'UserData');
 totSamp=get(handles.morePush,'UserData');
 set(handles.xSlider,'UserData',0);
 tStart=round(sampRate*str2num(handles.secEdit.String));
-tStart=tStart+(.5*handles.xSlider.Value/1000*sampRate);
+tStart=round(tStart+(.5*handles.xSlider.Value/1000*sampRate));
 if tStart<1
     tStart=1;
 end
@@ -326,7 +327,7 @@ sampRate=get(handles.secEdit,'UserData');
 totSamp=get(handles.morePush,'UserData');
 set(handles.xSlider,'UserData',0);
 tStart=round(sampRate*str2num(handles.secEdit.String));
-tStart=tStart+(handles.xSlider.Value/1000*sampRate);
+tStart=round(tStart+(handles.xSlider.Value/1000*sampRate));
 if tStart<1
     tStart=1;
 end
@@ -350,9 +351,9 @@ sampRate=get(handles.secEdit,'UserData');
 totSamp=get(handles.morePush,'UserData');
 set(handles.xSlider,'UserData',0);
 tStart=round(sampRate*str2num(handles.secEdit.String));
-tStart=tStart-(.5*handles.xSlider.Value/1000*sampRate);
+tStart=round(tStart-(.5*handles.xSlider.Value/1000*sampRate));
 if tStart>(totSamp-.04*sampRate)
-    tStart=totSamp-.04*sampRate;
+    tStart=round(totSamp-.04*sampRate);
 end
 handles.secEdit.String=num2str(tStart/sampRate);
 mem=get(handles.regAxes,'UserData');
@@ -372,9 +373,9 @@ sampRate=get(handles.secEdit,'UserData');
 totSamp=get(handles.morePush,'UserData');
 set(handles.xSlider,'UserData',0);
 tStart=round(sampRate*str2num(handles.secEdit.String));
-tStart=tStart-(handles.xSlider.Value/1000*sampRate);
+tStart=round(tStart-(handles.xSlider.Value/1000*sampRate));
 if tStart>(totSamp-.04*sampRate)
-    tStart=totSamp-.04*sampRate;
+    tStart=round(totSamp-.04*sampRate);
 end
 handles.secEdit.String=num2str(tStart/sampRate);
 mem=get(handles.regAxes,'UserData');
@@ -468,6 +469,38 @@ function colorEdit_CreateFcn(hObject, eventdata, handles)
 % handles    empty - handles not created until after all CreateFcns called
 
 % Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in nfftList.
+function nfftList_Callback(hObject, eventdata, handles)
+% hObject    handle to nfftList (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns nfftList contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from nfftList
+w=msgbox('Please wait');
+handles.yEdit.String=50;
+handles.ySlider.Value=-50;
+fDir=get(handles.xEdit,'UserData');
+sampRate=get(handles.secEdit,'UserData');
+totSamp=get(handles.morePush,'UserData');
+tStart=round(sampRate*str2double(handles.secEdit.String));
+set(handles.xSlider,'UserData',0);
+plotSpect(fDir,totSamp,tStart,sampRate,hObject,handles,w);
+
+
+% --- Executes during object creation, after setting all properties.
+function nfftList_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to nfftList (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');

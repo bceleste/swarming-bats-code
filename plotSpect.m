@@ -6,7 +6,6 @@ fs = sampRate;             % hardcode sampling rate
 
 % spectrogram options
 nOver = 1;              % sliding window increment for TFR
-nfft = 512;             % FFT points
 wlen = 127;             % window length for STFT; must be odd for TFTB
 wind = hanning(wlen);   % window for STFT
 
@@ -59,6 +58,18 @@ markerSize = 25;        % set size of data points
         %nBlocks = numel(bStart); % Sets the number of blocks equal to the 
         %number of values on which a block starts.  This could also be done
         %with the number of values in bStop.
+        
+        nfftPick=handles.nfftList.Value;
+        switch nfftPick
+            case 1
+                nfft=128;
+            case 2
+                nfft=256;
+            case 3
+                nfft=512;
+            case 4
+                nfft=1024;
+        end
 
         ff = (0:nfft/2-1).*fs/nfft;          % frequency index
         % makes an array from 0 to 255, then multiplies every value in the
@@ -110,12 +121,16 @@ markerSize = 25;        % set size of data points
             editCheck=get(handles.xSlider,'UserData');
             if editCheck
                 maxdB=str2double(handles.colorEdit.String);
+                start=0;
             else
                 set(ah, 'xLim', [ str2double(handles.secEdit.String)*1000 str2double(handles.secEdit.String)*1000-handles.xSlider.Value]);
                 xl=xlim;
                 yl=ylim;
                 if yl(2)==1
+                    start=1;
                     yl=[fMin fMax];
+                else
+                    start=0;
                 end
                 usefuldB=dB';
                 rowsize=size(xx);
@@ -126,13 +141,9 @@ markerSize = 25;        % set size of data points
                 topRow=round(rowsize(1)*yl(2)*1000/(fs/nfft));
                 usefuldB=usefuldB(botRow:topRow);
                 colsize=size(usefuldB);
-                leftcol=round(colsize(2)/rowsize(1)*(xl(1)/1000*fs-tStart))+1;
-                if leftcol<1
-                    leftcol=1;
-                end
-                rightcol=round(colsize(2)/rowsize(1)*(xl(2)/1000*fs-tStart+1))-1;
+                rightcol=round(-handles.xSlider.Value/40*colsize(2));
                 usefuldB=usefuldB';
-                usefuldB=usefuldB(leftcol:rightcol);
+                usefuldB=usefuldB(1:rightcol);
                 maxdB=max(usefuldB);
                 handles.colorEdit.String=num2str(maxdB);
             end
@@ -155,4 +166,8 @@ markerSize = 25;        % set size of data points
             %and labeling x- and y-axes.
             imagesc(tt*1e3,ff*1e-3,dB);  %plots the spectrogram.  Don't question how it works, it just does
             set (gcf, 'WindowButtonMotionFcn', @(object,eventdata) mouseMove(object,eventdata,hObject,fs,dB,tStart,fDir,totSamp,handles));
-            set(ah, 'yLim', [fMin fMax]); %sets the y-limits of the plot equal to the max and min frequencies found in the file
+            if start
+                set(ah, 'yLim', [fMin fMax]); %sets the y-limits of the plot equal to the max and min frequencies found in the file
+            else
+                set(ah, 'yLim', yl);
+            end

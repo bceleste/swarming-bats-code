@@ -33,15 +33,20 @@ markerSize = 25;        % set size of data points
             handles.secEdit.String=num2str(bStart/fs);
             %ensures that it will never try to display past the end of the
             %file
-        elseif bStart<=0
+        end
+        if bStart<=0
                 bStart=1;
             %ensures that it will never try to display before the beginning
             %of the file
         end
-        bStop=bStart+bSize;
-        lim=[bStart bStop];
-        data=audioread(fDir,lim);
-        [~,fName]=fileparts(fDir);
+        if totSamp<bStart+bSize %ensures that if the file is shorter than 40 milliseconds it will load right
+            bStop=totSamp;
+        else
+            bStop=bStart+bSize; %determines last data entry to be displayed 
+        end
+        lim=[bStart bStop]; %array with limits on what data entries will be displayed
+        data=audioread(fDir,lim); %reads in the necessary data from the choses file
+        [~,fName]=fileparts(fDir); %gets name of chosen file
         ts.data = data;      %%%%%%%%%%%%
         % The "data" entry in the structure ts is set to
         % the nth variable in the data array which should also be an array
@@ -60,7 +65,7 @@ markerSize = 25;        % set size of data points
         %with the number of values in bStop.
         
         nfftPick=handles.nfftList.Value;
-        switch nfftPick
+        switch nfftPick %gets number of fft points from menu on gui
             case 1
                 nfft=128;
             case 2
@@ -111,7 +116,7 @@ markerSize = 25;        % set size of data points
             %of the arrays.
             % plot spectrogram
             if exist('w','var');
-                close(w);
+                close(w); %if "please wait" message is open, closes it
             end
             
             if exist('handles.regAxes','var'), delete(handles.reAxes), end %clears axes
@@ -119,33 +124,32 @@ markerSize = 25;        % set size of data points
             dB=10*log10(abs(TFR)); %figures out decibel value for each frequency at each time
             set (gcf, 'WindowButtonMotionFcn', @(object,eventdata) mouseMove(object,eventdata,hObject,fs,dB,tStart,fDir,totSamp,handles));
             editCheck=get(handles.xSlider,'UserData');
-            if editCheck
-                maxdB=str2double(handles.colorEdit.String);
-                start=0;
+            if editCheck %this flag is set if the user changes the maximum dB value displayed
+                maxdB=str2double(handles.colorEdit.String); %sets user's max dB
+                start=0; %flag to say that the program didn't just start
             else
-                set(ah, 'xLim', [ str2double(handles.secEdit.String)*1000 str2double(handles.secEdit.String)*1000-handles.xSlider.Value]);
-                xl=xlim;
+                set(ah, 'xLim', [ str2double(handles.secEdit.String)*1000 str2double(handles.secEdit.String)*1000-handles.xSlider.Value]); %sets x-axis so it knows where to look for the max dB
                 yl=ylim;
-                if yl(2)==1
-                    start=1;
-                    yl=[fMin fMax];
+                if yl(2)==1 %this is only the case upon startup
+                    start=1; %flag showing no axes have been set
+                    yl=[fMin fMax]; %sets y-axis to defualt
                 else
-                    start=0;
+                    start=0; %resets flag
                 end
-                usefuldB=dB';
-                rowsize=size(xx);
-                botRow=round(rowsize(1)*(yl(1)*1000/(fs/nfft)-1))+1;
-                if botRow<1
+                usefuldB=dB'; %since matlab goes down columns, then across rows, it's necessary to transpose it to eliminate rows
+                rowsize=size(xx); %number of entries in each row of usefuldB
+                botRow=round(rowsize(1)*(yl(1)*1000/(fs/nfft)-1))+1; %estimates the first data point actually displayed on the plot
+                if botRow<1 %ensures it can never be less than 1, since that's impossible
                     botRow=1;
                 end
-                topRow=round(rowsize(1)*yl(2)*1000/(fs/nfft));
-                usefuldB=usefuldB(botRow:topRow);
-                colsize=size(usefuldB);
-                rightcol=round(-handles.xSlider.Value/40*colsize(2));
-                usefuldB=usefuldB';
-                usefuldB=usefuldB(1:rightcol);
-                maxdB=max(usefuldB);
-                handles.colorEdit.String=num2str(maxdB);
+                topRow=round(rowsize(1)*yl(2)*1000/(fs/nfft)); %estimates last data point actually displayed on the plot
+                usefuldB=usefuldB(botRow:topRow); %makes an array of just points on the plot given the y-axis limits
+                colsize=size(usefuldB); %total datapoints in array
+                rightcol=round(-handles.xSlider.Value/40*colsize(2)); %estimates the last data point to appear on the plot given the x-axis limits.  It's crude but it seems to work
+                usefuldB=usefuldB(1:rightcol); %further limits the matrix to only what will be displayed within the x- and y-limits
+                maxdB=max(usefuldB); %determines the max dB value displayed on the plot
+                handles.colorEdit.String=num2str(maxdB); %updates text box with the max value
+                set(handles.nfftList,'UserData',usefuldB);
             end
             hold on %ensures next commands don't reset the current graph
             axis xy; axis tight; view(0,90) %fixes the axes to show the first
@@ -165,9 +169,10 @@ markerSize = 25;        % set size of data points
             %color set, creating a color scale to display next to the plot,
             %and labeling x- and y-axes.
             imagesc(tt*1e3,ff*1e-3,dB);  %plots the spectrogram.  Don't question how it works, it just does
+            guidata(hObject,handles);
             set (gcf, 'WindowButtonMotionFcn', @(object,eventdata) mouseMove(object,eventdata,hObject,fs,dB,tStart,fDir,totSamp,handles));
-            if start
+            if start %this flag is only set immediately upon startup
                 set(ah, 'yLim', [fMin fMax]); %sets the y-limits of the plot equal to the max and min frequencies found in the file
             else
-                set(ah, 'yLim', yl);
+                set(ah, 'yLim', yl); %resets the y-zoom to whatever it was before plotspect was called
             end

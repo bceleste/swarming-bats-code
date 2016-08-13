@@ -72,8 +72,9 @@ set(handles.yEdit,'UserData',srow);
 set(handles.resetPush,'UserData',tfa);
 set(handles.pointCheck,'UserData',named);
 set(handles.xSlider,'UserData',0);
+dBMaxSet=get(handles.xSlider,'UserData');
 sampRate=fs;
-set(handles.regAxes,'UserData',[tStart,handles.xSlider.Value,handles.ySlider.Value,0,0,0,0,0,0,0,0,0,]);
+set(handles.regAxes,'UserData',[tStart,handles.xSlider.Value,handles.ySlider.Value,str2double(handles.colorEdit.String),dBMaxSet,handles.nfftList.Value,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
 handles.dB=[];
 set(gcf, 'units', 'normalized', 'position', [0.05 0.15 0.9 0.8]);
 
@@ -108,8 +109,9 @@ function xSlider_Callback(hObject, eventdata, handles)
 sampRate=get(handles.secEdit,'UserData');
 tStart=sampRate*str2num(handles.secEdit.String);
 handles.xEdit.String=num2str(-handles.xSlider.Value);
+dBMaxSet=get(handles.xSlider,'UserData');
 mem=get(handles.regAxes,'UserData');
-mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9)];
+mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,str2double(handles.colorEdit.String),dBMaxSet,handles.nfftList.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9),mem(10),mem(11),mem(12),mem(13),mem(14),mem(15),mem(16),mem(17),mem(18)];
 set(handles.regAxes,'UserData',mem);
 
 % --- Executes during object creation, after setting all properties.
@@ -135,8 +137,9 @@ function xEdit_Callback(hObject, eventdata, handles)
 sampRate=get(handles.secEdit,'UserData');
 tStart=sampRate*str2num(handles.secEdit.String);
 handles.xSlider.Value=-str2num(handles.xEdit.String);
+dBMaxSet=get(handles.xSlider,'UserData');
 mem=get(handles.regAxes,'UserData');
-mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9)];
+mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,str2double(handles.colorEdit.String),dBMaxSet,handles.nfftList.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9),mem(10),mem(11),mem(12),mem(13),mem(14),mem(15),mem(16),mem(17),mem(18)];
 set(handles.regAxes,'UserData',mem);
 
 % --- Executes during object creation, after setting all properties.
@@ -171,16 +174,18 @@ function undoPush_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 mem=get(handles.regAxes,'UserData');
-if mem(4)~=0
+if mem(7)~=0
 w=msgbox('Please wait');
-mem=[mem(4),mem(5),mem(6),mem(7),mem(8),mem(9),mem(10),mem(11),mem(12),0,0,0];
+mem=[mem(7),mem(8),mem(9),mem(10),mem(11),mem(12),mem(13),mem(14),mem(15),mem(16),mem(17),mem(18),mem(19),mem(20),mem(21),mem(22),mem(23),mem(24),0,0,0,0,0,0];
 set(handles.regAxes,'UserData',mem);
-%display(mem);
 tStart=mem(1);
 handles.xSlider.Value=mem(2);
 handles.xEdit.String=num2str(-handles.xSlider.Value);
 handles.ySlider.Value=mem(3);
 handles.yEdit.String=num2str(-handles.ySlider.Value);
+handles.colorEdit.String=num2str(mem(4));
+set(handles.xSlider,'UserData',mem(5));
+handles.nfftList.Value=mem(6);
 fDir=get(handles.xEdit,'UserData');
 sampRate=get(handles.secEdit,'UserData');
 totSamp=get(handles.morePush,'UserData');
@@ -209,8 +214,9 @@ handles.xEdit.String=40;
 fs=get(handles.secEdit,'UserData');
 tStart=fs*str2num(handles.secEdit.String);
 totSamp=get(handles.morePush,'UserData');
+dBMaxSet=get(handles.xSlider,'UserData');
 mem=get(handles.regAxes,'UserData');
-mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9)];
+mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,str2double(handles.colorEdit.String),dBMaxSet,handles.nfftList.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9),mem(10),mem(11),mem(12),mem(13),mem(14),mem(15),mem(16),mem(17),mem(18)];
 set(handles.regAxes,'UserData',mem);
 set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, fDir,totSamp, dB,  handles));
 plotSpect(fDir,totSamp,tStart,fs,hObject,handles,w);
@@ -249,8 +255,9 @@ function ySlider_Callback(hObject, eventdata, handles)
 sampRate=get(handles.secEdit,'UserData');
 tStart=sampRate*str2num(handles.secEdit.String);
 handles.yEdit.String=num2str(-handles.ySlider.Value);
+dBMaxSet=get(handles.xSlider,'UserData');
 mem=get(handles.regAxes,'UserData');
-mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9)];
+mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,str2double(handles.colorEdit.String),dBMaxSet,handles.nfftList.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9),mem(10),mem(11),mem(12),mem(13),mem(14),mem(15),mem(16),mem(17),mem(18)];
 set(handles.regAxes,'UserData',mem);
 
 % --- Executes during object creation, after setting all properties.
@@ -276,8 +283,9 @@ function yEdit_Callback(hObject, eventdata, handles)
 sampRate=get(handles.secEdit,'UserData');
 tStart=sampRate*str2num(handles.secEdit.String);
 handles.ySlider.Value=-str2num(handles.yEdit.String);
+dBMaxSet=get(handles.xSlider,'UserData');
 mem=get(handles.regAxes,'UserData');
-mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9)];
+mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,str2double(handles.colorEdit.String),dBMaxSet,handles.nfftList.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9),mem(10),mem(11),mem(12),mem(13),mem(14),mem(15),mem(16),mem(17),mem(18)];
 set(handles.regAxes,'UserData',mem);
 
 % --- Executes during object creation, after setting all properties.
@@ -309,8 +317,9 @@ if tStart<1
     tStart=1;
 end
 handles.secEdit.String=num2str(tStart/sampRate);
+dBMaxSet=get(handles.xSlider,'UserData');
 mem=get(handles.regAxes,'UserData');
-mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9)];
+mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,str2double(handles.colorEdit.String),dBMaxSet,handles.nfftList.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9),mem(10),mem(11),mem(12),mem(13),mem(14),mem(15),mem(16),mem(17),mem(18)];
 set(handles.regAxes,'UserData',mem);
 set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, fDir, totSamp, dB,  handles));
 plotSpect(fDir,totSamp,tStart,sampRate,hObject,handles,w);
@@ -332,8 +341,9 @@ if tStart<1
     tStart=1;
 end
 handles.secEdit.String=num2str(tStart/sampRate);
+dBMaxSet=get(handles.xSlider,'UserData');
 mem=get(handles.regAxes,'UserData');
-mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9)];
+mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,str2double(handles.colorEdit.String),dBMaxSet,handles.nfftList.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9),mem(10),mem(11),mem(12),mem(13),mem(14),mem(15),mem(16),mem(17),mem(18)];
 set(handles.regAxes,'UserData',mem);
 set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, fDir, totSamp, dB,  handles));
 plotSpect(fDir,totSamp,tStart,sampRate,hObject,handles,w);
@@ -356,8 +366,9 @@ if tStart>(totSamp-.04*sampRate)
     tStart=round(totSamp-.04*sampRate);
 end
 handles.secEdit.String=num2str(tStart/sampRate);
+dBMaxSet=get(handles.xSlider,'UserData');
 mem=get(handles.regAxes,'UserData');
-mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9)];
+mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,str2double(handles.colorEdit.String),dBMaxSet,handles.nfftList.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9),mem(10),mem(11),mem(12),mem(13),mem(14),mem(15),mem(16),mem(17),mem(18)];
 set(handles.regAxes,'UserData',mem);
 set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, fDir, totSamp, dB,  handles));
 plotSpect(fDir,totSamp,tStart,sampRate,hObject,handles,w);
@@ -378,8 +389,9 @@ if tStart>(totSamp-.04*sampRate)
     tStart=round(totSamp-.04*sampRate);
 end
 handles.secEdit.String=num2str(tStart/sampRate);
+dBMaxSet=get(handles.xSlider,'UserData');
 mem=get(handles.regAxes,'UserData');
-mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9)];
+mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,str2double(handles.colorEdit.String),dBMaxSet,handles.nfftList.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9),mem(10),mem(11),mem(12),mem(13),mem(14),mem(15),mem(16),mem(17),mem(18)];
 set(handles.regAxes,'UserData',mem);
 set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, fDir, totSamp, dB,  handles));
 plotSpect(fDir,totSamp,tStart,sampRate,hObject,handles,w);
@@ -398,8 +410,9 @@ sampRate=get(handles.secEdit,'UserData');
 totSamp=get(handles.morePush,'UserData');
 set(handles.xSlider,'UserData',0);
 tStart=round(sampRate*str2double(handles.secEdit.String));
+dBMaxSet=get(handles.xSlider,'UserData');
 mem=get(handles.regAxes,'UserData');
-mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9)];
+mem=[tStart,handles.xSlider.Value,handles.ySlider.Value,str2double(handles.colorEdit.String),dBMaxSet,handles.nfftList.Value,mem(1),mem(2),mem(3),mem(4),mem(5),mem(6),mem(7),mem(8),mem(9),mem(10),mem(11),mem(12),mem(13),mem(14),mem(15),mem(16),mem(17),mem(18)];
 set(handles.regAxes,'UserData',mem);
 set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, fDir, totSamp, dB,  handles));
 plotSpect(fDir,totSamp,tStart,sampRate,hObject,handles,w);
@@ -421,7 +434,7 @@ tStart=round(fs*str2double(handles.secEdit.String)); %time of the leftmost edge 
 plotWidth=-handles.xSlider.Value; %width of the plot when the button was clicked, in milliseconds
 plotHeight=-handles.ySlider.Value; %height of the plot when the button was clicked, in kilohertz
 fDir=get(handles.xEdit,'UserData'); %Vector containing all data entries from the original .wav file
-plotData=audioread(fDir,round(gcf.XLim.*(fs*1000))); %vector containing data entries from the original .wav file for the times displayed
+plotData=get(handles.nfftList,'UserData'); %vector containing data entries from the original .wav file for the times displayed
                                                      %on the plot when the button was clicked
 
 %Now add the function to funcList.  Put the name in single quotes and

@@ -4,6 +4,17 @@ function mouseMove(object,eventdata,hObject,fs,dB,tStart,fDir,totSamp,handles)
 C=get(gca,'CurrentPoint');
 xl=xlim;
 yl=ylim;
+nfftPick=handles.nfftList.Value;
+        switch nfftPick %gets number of fft points from popup menu on gui
+            case 1
+                nfft=128;
+            case 2
+                nfft=256;
+            case 3
+                nfft=512;
+            case 4
+                nfft=1024;
+        end
 
 %Check if area is highlighted
 r=get(handles.ySlider,'UserData');
@@ -25,10 +36,10 @@ if C(1,1)>xl(1) && C(1,1)<xl(2) && C(1,2)>yl(1) && C(1,2)<yl(2) && C(1,1)>=0 && 
         drawnow;
     end
     %display current decibel value
-    handles.dBText.String=num2str(dB(round(C(1,2)*1000/(fs/512)),round(C(1,1)/1000*fs-tStart)));
+    handles.dBText.String=num2str(dB(round(C(1,2)*1000/(fs/nfft)),round(C(1,1)/1000*fs-tStart)));
     move=1; %flag to confirm that mouse moved since the mouse button was pressed
     set(handles.freqText,'UserData',move); %saves value of move to pass into drag
-    set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, fDir, totSamp, dB, fname, handles));
+    set (gcf, 'WindowButtonUpFcn', @(object,eventdata)drag(object, eventdata, fs, hObject, fDir, totSamp, dB, handles));
     guidata(hObject,handles); %updates all handles
     drawnow;
 else

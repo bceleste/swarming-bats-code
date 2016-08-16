@@ -65,6 +65,9 @@ if C(1,1)>xl(1) && C(1,1)<xl(2) && C(1,2)>yl(1) && C(1,2)<yl(2)
         set(ah, 'xLim', [tPos-tDel/2 tPos+tDel/2]); %centers the plot around the clicked point
         set(ah, 'YLim', [fPos-fDel/2 fPos+fDel/2]);
         tStart=round(handles.regAxes.XLim(1)*fs/1000); %Determines which data entry is the first to be plotted in the new zoom
+        if tStart<=0;
+            tStart=1; %makes sure plotSpect doesn't receive an impossible starting data value
+        end
         handles.secEdit.String=num2str(tStart/fs); %Sets the text box to display the correct starting time
         set(handles.xSlider,'UserData',0);
         dBMaxSet=get(handles.xSlider,'UserData');
@@ -75,6 +78,10 @@ if C(1,1)>xl(1) && C(1,1)<xl(2) && C(1,2)>yl(1) && C(1,2)<yl(2)
         edge=xlim;
         if edge(2)>totSamp/fs*1000 %checks that it isn't displaying past the end of the file
             set(ah, 'XLim', [totSamp/fs*1000+handles.xSlider.Value totSamp/fs*1000]); %sets right edge of plot at end of file
+        end
+        edge=xlim;
+        if edge(1)<0 && totSamp/fs<.04 %This only matters for files <40 ms
+            set(ah, 'XLim', [0 totSamp/fs*1000]);
         end
         if ah.YLim(1)<0 %Checks if user tried to zoom below 0 Hz
             ah.YLim=[0 fDel]; %Ensures plot cannot show negative frequencies to avoid indexing errors
@@ -97,9 +104,10 @@ if C(1,1)>xl(1) && C(1,1)<xl(2) && C(1,2)>yl(1) && C(1,2)<yl(2)
             srow=get(handles.yEdit,'UserData');
             srow=srow+1; %Moves down a row for every point the user saves
             set(handles.yEdit,'UserData',srow); %Updates which row it's currently on
-            tfa(srow,1)=str2double(handles.timeText.String); %Saves x-value of clicked point
-            tfa(srow,2)=str2double(handles.freqText.String); %Saves y-values of clicked point
-            tfa(srow,3)=str2double(handles.dBText.String); %Saves z-value of clicked point
+            C=get(gca,'CurrentPoint');
+            tfa(srow,1)=C(1,1); %Saves x-value of clicked point
+            tfa(srow,2)=C(1,2); %Saves y-values of clicked point
+            tfa(srow,3)=dB(round(C(1,2)*1000/(fs/nfft)),round(C(1,1)/1000*fs-tStart)); %Saves z-value of clicked point
             set(handles.resetPush,'UserData',tfa); %Saves array containing the three above values
             guidata(hObject,eventdata); %Updated handles
             
